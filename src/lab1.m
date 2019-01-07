@@ -47,14 +47,18 @@ try
   % setpoints to the Nucleo firmware. 
   viaPts = [0, -400, 400, -400, 400, 0];
 
-  
+  pp.write(65, packet);
+  pause(0.003);
+  Calibration=  pp.read(65);
 
   % Iterate through a sine wave for joint values
   for k = viaPts
       tic
       %incremtal = (single(k) / sinWaveInc);
       packet = zeros(15, 1, 'single');
-      packet(1) = k;
+      packet(1) = Calibration(1)+k;
+      packet(4) = Calibration(4)+k/4;
+      packet(7) = Calibration(7)+k/4;
 
      
       % Send packet to the server and get the response
@@ -68,6 +72,7 @@ try
           disp(returnPacket);
       end
       
+      
       for x = 0:3
           packet((x*3)+1)=0.1;
           packet((x*3)+2)=0;
@@ -77,9 +82,6 @@ try
       pp.write(65, packet);
       pause(0.003);
       returnPacket2=  pp.read(65);
-      %this version will start an auto-polling server and read back the
-      %current data
-      %returnPacket2=  pp.command(65, packet);
       if DEBUG
           disp('Received Packet 2:');
           disp(returnPacket2);
