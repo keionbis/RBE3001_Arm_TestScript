@@ -46,19 +46,17 @@ try
   % executed on joint 1 of the arm and iteratively sends the list of
   % setpoints to the Nucleo firmware. 
   viaPts = [0, -400, 400, -400, 400, 0];
+  Calibration = pp.command(SERV_ID, packet)
 
-  pp.write(65, packet);
-  pause(0.003);
-  Calibration=  pp.read(65);
-
+pause(10)
   % Iterate through a sine wave for joint values
   for k = viaPts
       tic
       %incremtal = (single(k) / sinWaveInc);
       packet = zeros(15, 1, 'single');
       packet(1) = Calibration(1)+k;
-      packet(4) = Calibration(4)+k/4;
-      packet(7) = Calibration(7)+k/4;
+%       packet(4) = Calibration(4)+k/4;
+%       packet(7) = Calibration(7)+k/4;
 
      
       % Send packet to the server and get the response
